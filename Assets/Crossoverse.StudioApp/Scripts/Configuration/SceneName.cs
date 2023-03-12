@@ -1,4 +1,4 @@
-﻿namespace Crossoverse.StudioApp.Application
+﻿namespace Crossoverse.StudioApp.Configuration
 {
     public enum SceneName
     {

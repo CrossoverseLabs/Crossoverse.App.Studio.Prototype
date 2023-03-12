@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Crossoverse.StudioApp.Application
+namespace Crossoverse.StudioApp.Configuration
 {
     [Serializable]
     [CreateAssetMenu(menuName = "Crossoverse/StudioApp/Create SceneConfiguration", fileName = "SceneConfiguration")]
