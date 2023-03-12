@@ -4,7 +4,7 @@ namespace Crossoverse.StudioApp.Context
 {
     public sealed class ApplicationContext
     {
-        private EngineConfiguration _engineConfiguration;
+        private readonly EngineConfiguration _engineConfiguration;
         
         public ApplicationContext(EngineConfiguration engineConfiguration)
         {

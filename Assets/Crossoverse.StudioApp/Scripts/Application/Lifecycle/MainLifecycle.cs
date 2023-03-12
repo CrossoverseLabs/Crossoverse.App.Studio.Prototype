@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Cysharp.Threading.Tasks;
 using VContainer;
 using VContainer.Unity;
 using Crossoverse.StudioApp.Configuration;
@@ -21,25 +19,18 @@ namespace Crossoverse.StudioApp.Application
         protected override void Configure(IContainerBuilder builder)
         {
             builder.RegisterInstance(engineConfiguration);
+            builder.RegisterInstance(sceneConfiguration);
             builder.Register<ApplicationContext>(Lifetime.Singleton);
+            builder.Register<SceneTransitionContext>(Lifetime.Singleton);
         }
         
         private async void Start()
         {
             var applicationContext = Container.Resolve<ApplicationContext>();
+            var sceneTransitionContext = Container.Resolve<SceneTransitionContext>();
             
             applicationContext.Initialize();
-            
-            await LoadScenesAsync();
-        }
-        
-        private async UniTask LoadScenesAsync()
-        {
-            foreach (var scene in sceneConfiguration.InitialScenes)
-            {
-                await SceneManager.LoadSceneAsync(scene.ToString(), LoadSceneMode.Additive);
-            }
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneConfiguration.InitialActiveScene.ToString()));
+            await sceneTransitionContext.InitializeAsync();
         }
     }
 }

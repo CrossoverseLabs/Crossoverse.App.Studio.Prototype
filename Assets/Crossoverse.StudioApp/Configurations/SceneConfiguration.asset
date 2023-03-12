@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InitialScenes: 0000000001000000
   InitialActiveScene: 1
+  Stages:
+  - Name: DefaultStage
+    Scenes: 02000000
+    ActiveSceneName: 2

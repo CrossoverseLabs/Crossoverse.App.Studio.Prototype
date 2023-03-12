@@ -10,5 +10,8 @@ namespace Crossoverse.StudioApp.Configuration
     {
         public List<SceneName> InitialScenes = new List<SceneName>();
         public SceneName InitialActiveScene = SceneName.DefaultStage;
+        
+        [Header("Stage Transition")]
+        public List<Stage> Stages = new List<Stage>();
     }
 }
