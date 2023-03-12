@@ -21,6 +21,7 @@ namespace Crossoverse.StudioApp.Presentation.OutputPort
             
             sceneTransitionContext
                 .Loading
+                // .CombineLatest() // 合成前のストリームのいずれかに値が流れてきたら、合成前の全てのストリームの最新の値をリストにして合成後のストリームに流す。
                 .Subscribe(loading =>
                 {
                     Debug.Log($"[{nameof(DefaultScreenPresenter)}] Loading: {loading}");
