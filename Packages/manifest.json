@@ -1,7 +1,8 @@
 {
   "dependencies": {
-    "com.cysharp.unitask": "2.3.3",
+    "com.neuecc.messagepack": "2.4.35",
     "com.neuecc.unirx": "7.1.0",
+    "com.cysharp.unitask": "2.3.3",
     "jp.hadashikick.vcontainer": "1.13.0",
     "com.unity.collab-proxy": "2.0.0",
     "com.unity.feature.development": "1.0.1",
