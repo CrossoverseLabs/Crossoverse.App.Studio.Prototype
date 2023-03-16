@@ -163,6 +163,12 @@
       },
       "url": "https://packages.unity.com"
     },
+    "dev.crossoverse.serialization": {
+      "version": "file:Crossoverse.Serialization",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "jp.hadashikick.vcontainer": {
       "version": "1.13.0",
       "depth": 0,
