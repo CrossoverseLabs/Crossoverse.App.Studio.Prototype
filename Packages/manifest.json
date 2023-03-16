@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dev.crossoverse.transports": "file:./Crossoverse.Transports/Core",
     "com.neuecc.messagepack": "2.4.35",
     "com.neuecc.unirx": "7.1.0",
     "com.cysharp.unitask": "2.3.3",

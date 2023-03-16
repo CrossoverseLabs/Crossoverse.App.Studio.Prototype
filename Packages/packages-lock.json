@@ -169,6 +169,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "dev.crossoverse.transports": {
+      "version": "file:./Crossoverse.Transports/Core",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "jp.hadashikick.vcontainer": {
       "version": "1.13.0",
       "depth": 0,
