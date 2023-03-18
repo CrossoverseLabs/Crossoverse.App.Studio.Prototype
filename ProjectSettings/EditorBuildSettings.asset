@@ -6,15 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Crossoverse.StudioApp/Scenes/Main.unity
+    path: Assets/Crossoverse.StudioApp.Contents/Scenes/Main.unity
     guid: 46c83e2026af9f0429c79756050d8f29
   - enabled: 1
-    path: Assets/Crossoverse.StudioApp/Scenes/Screen/DefaultScreen.unity
+    path: Assets/Crossoverse.StudioApp.Contents/Scenes/Screen/DefaultScreen.unity
     guid: 18d9f0ac55e45524890e3d4c61ee5a35
   - enabled: 1
-    path: Assets/Crossoverse.StudioApp/Scenes/System/CameraSystem.unity
+    path: Assets/Crossoverse.StudioApp.Contents/Scenes/System/CameraSystem.unity
     guid: adbe143fefbddb545aeb75ad0f5ae199
   - enabled: 1
-    path: Assets/Crossoverse.StudioApp/Scenes/Stage/DefaultStage.unity
+    path: Assets/Crossoverse.StudioApp.Contents/Scenes/Stage/DefaultStage.unity
     guid: 0e0e82d53ac3b664aa40f09da9825e19
   m_configObjects: {}
