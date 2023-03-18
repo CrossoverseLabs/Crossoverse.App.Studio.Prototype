@@ -8,7 +8,7 @@ namespace Crossoverse.StudioApp.Configuration
     [CreateAssetMenu(menuName = "Crossoverse/StudioApp/Create SceneConfiguration", fileName = "SceneConfiguration")]
     public sealed class SceneConfiguration : ScriptableObject
     {
-        public List<SceneName> InitialScenes = new List<SceneName>();
+        public List<SceneName> GlobalScenes = new List<SceneName>();
         public SceneName InitialActiveScene = SceneName.DefaultStage;
         
         [Header("Stage Transition")]

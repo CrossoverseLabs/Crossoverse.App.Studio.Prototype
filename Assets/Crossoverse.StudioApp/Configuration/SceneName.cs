@@ -2,10 +2,13 @@
 {
     public enum SceneName
     {
-        CameraSystem,
-        DefaultScreen,
-        DefaultStage,
-        
         None = -1,
+
+        // Global Scenes
+        CameraSystem = 001,
+        DefaultScreen = 002,
+
+        // Default Stage Scenes
+        DefaultStage = 101,
     }
 }

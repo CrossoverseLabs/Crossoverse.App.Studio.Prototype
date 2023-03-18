@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d28f60edde49059ae5df427715dd3c, type: 3}
   m_Name: SceneConfiguration
   m_EditorClassIdentifier: 
-  InitialScenes: 0000000001000000
+  GlobalScenes: 0100000002000000
   InitialActiveScene: 1
   Stages:
-  - Name: DefaultStage
-    Scenes: 02000000
-    ActiveSceneName: 2
+  - Name: 10
+    Scenes: 65000000
+    ActiveSceneName: 101

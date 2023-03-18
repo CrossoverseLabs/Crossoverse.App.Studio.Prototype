@@ -30,7 +30,7 @@ namespace Crossoverse.StudioApp.Application
             var sceneTransitionContext = Container.Resolve<SceneTransitionContext>();
             
             applicationContext.Initialize();
-            await sceneTransitionContext.InitializeAsync();
+            await sceneTransitionContext.LoadGlobalScenesAndInitialStageAsync();
         }
     }
 }
