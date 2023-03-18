@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Crossoverse.Transports
 {
-    public interface ITransport
+    public interface ITransport : IDisposable
     {
         event Action OnConnected;
         event Action OnDisconnected;
@@ -17,7 +16,5 @@ namespace Crossoverse.Transports
         Task DisconnectAsync();
         
         void Send(ArraySegment<byte> data);
-        
-        Task DisposeAsync();
     }
 }
