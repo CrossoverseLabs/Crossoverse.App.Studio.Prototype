@@ -14,7 +14,7 @@ namespace Crossoverse.StudioApp.Presentation.OutputPort
         public DefaultScreenPresenter
         (
             DefaultScreenView view,
-            SceneTransitionContext sceneTransitionContext
+            ISceneTransitionContext sceneTransitionContext
         )
         {
             Debug.Log($"[{nameof(DefaultScreenPresenter)}] Constructor");

@@ -21,7 +21,7 @@ namespace Crossoverse.StudioApp.Application
             builder.RegisterInstance(engineConfiguration);
             builder.RegisterInstance(sceneConfiguration);
             builder.Register<ApplicationContext>(Lifetime.Singleton);
-            builder.Register<SceneTransitionContext>(Lifetime.Singleton);
+            builder.Register<SceneTransitionContext>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
         
         private async void Start()

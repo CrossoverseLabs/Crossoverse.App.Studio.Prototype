@@ -7,7 +7,12 @@ using Crossoverse.StudioApp.Configuration;
 
 namespace Crossoverse.StudioApp.Context
 {
-    public sealed class SceneTransitionContext
+    public interface ISceneTransitionContext
+    {
+        public IReadOnlyReactiveProperty<bool> Loading { get;  }
+    }
+    
+    public sealed class SceneTransitionContext : ISceneTransitionContext
     {
         public IReadOnlyReactiveProperty<bool> Loading => _loading;
         private readonly ReactiveProperty<bool> _loading = new ReactiveProperty<bool>();
