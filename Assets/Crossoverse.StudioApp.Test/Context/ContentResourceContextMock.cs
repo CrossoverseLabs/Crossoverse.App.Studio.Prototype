@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Crossoverse.Context;
 
 namespace Crossoverse.StudioApp.Test.Context
@@ -18,6 +19,17 @@ namespace Crossoverse.StudioApp.Test.Context
         {
             UnityEngine.Debug.Log($"[ContentResourceContextMock] SetNextContentId: {contentId}");
             NextContentId = contentId;
+        }
+
+        public async UniTask<bool> LoadContentResourceInfoAsync(string contentId)
+        {
+            UnityEngine.Debug.Log($"[ContentResourceContextMock] LoadContentResourceInfoAsync: {contentId}");
+            return true;
+        }
+
+        public async UniTask LoadSkyboxAsync()
+        {
+            UnityEngine.Debug.Log($"[ContentResourceContextMock] LoadSkyboxAsync");
         }
     }
 }
