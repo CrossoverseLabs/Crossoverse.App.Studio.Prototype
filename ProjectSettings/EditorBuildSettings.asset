@@ -26,4 +26,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Crossoverse.StudioApp.Contents/Scenes/Stage_Content/ContentScreen.unity
     guid: 458e768a44572e944834ae580a087d1f
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: aba9b7f00dccf314ea8cdafa76627d00, type: 2}
