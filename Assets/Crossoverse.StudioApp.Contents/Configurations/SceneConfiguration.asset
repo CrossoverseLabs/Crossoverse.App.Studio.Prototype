@@ -18,3 +18,9 @@ MonoBehaviour:
   - Name: 10
     Scenes: 65000000
     ActiveSceneName: 101
+  - Name: 20
+    Scenes: ca000000
+    ActiveSceneName: 202
+  - Name: 30
+    Scenes: 2e0100002d010000
+    ActiveSceneName: 301

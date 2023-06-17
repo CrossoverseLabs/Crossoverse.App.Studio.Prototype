@@ -22,6 +22,8 @@ namespace Crossoverse.StudioApp.Application
             builder.RegisterInstance(sceneConfiguration);
             builder.Register<ApplicationContext>(Lifetime.Singleton);
             builder.Register<SceneTransitionContext>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+
+            builder.Register<Test.Context.ContentResourceContextMock>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
         
         private async void Start()
