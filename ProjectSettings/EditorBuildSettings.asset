@@ -15,6 +15,15 @@ EditorBuildSettings:
     path: Assets/Crossoverse.StudioApp.Contents/Scenes/System/CameraSystem.unity
     guid: adbe143fefbddb545aeb75ad0f5ae199
   - enabled: 1
-    path: Assets/Crossoverse.StudioApp.Contents/Scenes/Stage/DefaultStage.unity
-    guid: 0e0e82d53ac3b664aa40f09da9825e19
+    path: Assets/Crossoverse.StudioApp.Contents/Scenes/Stage_Title/TitleScreen.unity
+    guid: f4483339285add440a737509d5ec32d3
+  - enabled: 1
+    path: Assets/Crossoverse.StudioApp.Contents/Scenes/Stage_Entrance/EntranceScreen.unity
+    guid: 2104dcc9886a9484cbe077307a30f4b1
+  - enabled: 1
+    path: Assets/Crossoverse.StudioApp.Contents/Scenes/Stage_Content/ContentStage.unity
+    guid: c53c759ac25ec6844a43a648a47551cb
+  - enabled: 1
+    path: Assets/Crossoverse.StudioApp.Contents/Scenes/Stage_Content/ContentScreen.unity
+    guid: 458e768a44572e944834ae580a087d1f
   m_configObjects: {}

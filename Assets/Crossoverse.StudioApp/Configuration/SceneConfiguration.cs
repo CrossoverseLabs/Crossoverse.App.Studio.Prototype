@@ -9,7 +9,7 @@ namespace Crossoverse.StudioApp.Configuration
     public sealed class SceneConfiguration : ScriptableObject
     {
         public List<SceneName> GlobalScenes = new List<SceneName>();
-        public SceneName InitialActiveScene = SceneName.DefaultStage;
+        public SceneName InitialActiveScene = SceneName.None;
         
         [Header("Stage Transition")]
         public List<Stage> Stages = new List<Stage>();

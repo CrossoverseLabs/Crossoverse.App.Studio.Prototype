@@ -8,7 +8,15 @@
         CameraSystem = 001,
         DefaultScreen = 002,
 
-        // Default Stage Scenes
-        DefaultStage = 101,
+        // Title Stage Scenes
+        TitleScreen = 101,
+
+        // Entrance Stage Scenes
+        EntranceStage = 201,
+        EntranceScreen = 202,
+
+        // Content Stage Scenes
+        ContentStage = 301,
+        ContentScreen = 302,
     }
 }
