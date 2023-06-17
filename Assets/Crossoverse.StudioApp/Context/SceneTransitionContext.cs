@@ -10,6 +10,7 @@ namespace Crossoverse.StudioApp.Context
     public interface ISceneTransitionContext
     {
         public IReadOnlyReactiveProperty<bool> Loading { get;  }
+        UniTask LoadStageAsync(StageName stageName);
     }
     
     public sealed class SceneTransitionContext : ISceneTransitionContext
@@ -38,7 +39,19 @@ namespace Crossoverse.StudioApp.Context
             await LoadGlobalScenesAsync(true);
             await TransitAsync(_sceneConfiguration.Stages[0]);
         }
-        
+
+        public async UniTask LoadStageAsync(StageName stageName)
+        {
+            foreach (var stage in _sceneConfiguration.Stages)
+            {
+                if (stage.Name == stageName) 
+                {
+                    await TransitAsync(stage);
+                    return;
+                }
+            }
+        }
+
         public async UniTask LoadGlobalScenesAsync(bool onInitialize = false)
         {
             _loading.Value = true;
@@ -58,10 +71,17 @@ namespace Crossoverse.StudioApp.Context
         public async UniTask TransitAsync(Stage stage)
         {
             _loading.Value = true;
-            
+
+            foreach (var sceneName in _loadedScenes.ToArray())
+            {
+                await SceneManager.UnloadSceneAsync(sceneName.ToString());
+                _loadedScenes.Remove(sceneName);
+            }
+
             foreach (var sceneName in stage.Scenes)
             {
                 await SceneManager.LoadSceneAsync(sceneName.ToString(), LoadSceneMode.Additive);
+                _loadedScenes.Add(sceneName);
             }
             if (stage.ActiveSceneName != SceneName.None)
             {
