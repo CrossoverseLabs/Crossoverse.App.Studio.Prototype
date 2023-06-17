@@ -244,6 +244,13 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "dev.crossoverse.toolkit.resourceprovider": {
+      "version": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.ResourceProvider",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "bf1a297d06bdc5d8cfc68bfec079ecf0f2d0bb41"
+    },
     "dev.crossoverse.transports": {
       "version": "file:./Crossoverse.Transports/Core",
       "depth": 0,

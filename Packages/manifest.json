@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "dev.crossoverse.toolkit.resourceprovider": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.ResourceProvider",
     "dev.crossoverse.transports": "file:./Crossoverse.Transports/Core",
     "com.neuecc.messagepack": "2.4.35",
     "com.neuecc.unirx": "7.1.0",
