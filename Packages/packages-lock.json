@@ -278,6 +278,12 @@
       },
       "hash": "6a46afde7797cb7ee08a561ad3db1f32696dfa29"
     },
+    "dev.crossoverse.core.unity": {
+      "version": "file:./Crossoverse.Core/Unity",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "dev.crossoverse.serialization": {
       "version": "file:Crossoverse.Serialization",
       "depth": 0,
