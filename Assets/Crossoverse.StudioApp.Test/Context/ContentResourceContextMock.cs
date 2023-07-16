@@ -17,19 +17,19 @@ namespace Crossoverse.StudioApp.Test.Context
 
         public void SetNextContentId(string contentId)
         {
-            UnityEngine.Debug.Log($"[ContentResourceContextMock] SetNextContentId: {contentId}");
+            UnityEngine.Debug.Log($"<color=orange>[ContentResourceContextMock] SetNextContentId: {contentId}</color>");
             NextContentId = contentId;
         }
 
         public async UniTask<bool> LoadContentResourceInfoAsync(string contentId)
         {
-            UnityEngine.Debug.Log($"[ContentResourceContextMock] LoadContentResourceInfoAsync: {contentId}");
+            UnityEngine.Debug.Log($"<color=orange>[ContentResourceContextMock] LoadContentResourceInfoAsync: {contentId}</color>");
             return true;
         }
 
         public async UniTask LoadSkyboxAsync()
         {
-            UnityEngine.Debug.Log($"[ContentResourceContextMock] LoadSkyboxAsync");
+            UnityEngine.Debug.Log($"<color=orange>[ContentResourceContextMock] LoadSkyboxAsync</color>");
         }
     }
 }
