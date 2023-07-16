@@ -26,7 +26,7 @@ namespace Crossoverse.StudioApp.Presentation.EntranceScreen
                     _enterSubject.OnNext(_selectedContentId);
                 });
 
-            _selectedContentId = "SampleContent01";
+            _selectedContentId = "SampleContent01_StreamingAssets";
             _contentTitle.text = _selectedContentId;
         }
 

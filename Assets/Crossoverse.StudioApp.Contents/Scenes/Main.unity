@@ -241,3 +241,5 @@ MonoBehaviour:
   autoInjectGameObjects: []
   engineConfiguration: {fileID: 11400000, guid: dbd1a92d31f737e48aad01bff4ddb9be, type: 2}
   sceneConfiguration: {fileID: 11400000, guid: e470ddc0575ab434d9f06a208556ec1d, type: 2}
+  _contentHeaderLocalRepository: {fileID: 11400000, guid: 135b9bd6db246ad4d8049dd2fd70c6ce, type: 2}
+  _resourceInfoLocalRepository: {fileID: 11400000, guid: 06dda38d26612844f95f3730e053a4b3, type: 2}

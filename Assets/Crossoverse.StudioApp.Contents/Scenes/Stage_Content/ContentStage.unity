@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: 
+    TypeName: Crossoverse.StudioApp.Application.MainLifecycle
   autoRun: 1
   autoInjectGameObjects: []
   _testMode: 0
