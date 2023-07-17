@@ -5,6 +5,7 @@ using Crossoverse.Context;
 using Crossoverse.Infrastructure.Persistence;
 using Crossoverse.StudioApp.Configuration;
 using Crossoverse.StudioApp.Context;
+using Crossoverse.Core.Domain.ResourceProvider;
 using Crossoverse.Toolkit.ResourceProvider;
 
 namespace Crossoverse.StudioApp.Application
@@ -19,6 +20,7 @@ namespace Crossoverse.StudioApp.Application
         [SerializeField] private EngineConfiguration engineConfiguration;
         [SerializeField] private SceneConfiguration sceneConfiguration;
 
+        [SerializeField] private AvatarMetadataLocalRepository _avatarMetadataLocalRepository;
         [SerializeField] private ContentHeaderLocalRepository _contentHeaderLocalRepository;
         [SerializeField] private ResourceInfoLocalRepository _resourceInfoLocalRepository;
         
@@ -33,11 +35,14 @@ namespace Crossoverse.StudioApp.Application
             builder.Register<ContentResourceContext>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
 
             // Repository
+            builder.RegisterInstance(_avatarMetadataLocalRepository).AsImplementedInterfaces();
             builder.RegisterInstance(_contentHeaderLocalRepository).AsImplementedInterfaces();
             builder.RegisterInstance(_resourceInfoLocalRepository).AsImplementedInterfaces();
 
             // ResourceProvider
             builder.Register<AddressableResourceProvider>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<UrpVrmProvider>(Lifetime.Singleton).AsImplementedInterfaces()
+                    .WithParameter<IBinaryDataProvider>(new LocalFileBinaryDataProvider());
         }
         
         private async void Start()
