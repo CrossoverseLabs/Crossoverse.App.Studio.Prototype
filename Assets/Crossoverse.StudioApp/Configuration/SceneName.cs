@@ -7,6 +7,7 @@
         // Global Scenes
         CameraSystem = 001,
         DefaultScreen = 002,
+        PlayerSystem = 003,
 
         // Title Stage Scenes
         TitleScreen = 101,
