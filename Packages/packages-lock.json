@@ -311,12 +311,6 @@
       "dependencies": {},
       "hash": "bf1a297d06bdc5d8cfc68bfec079ecf0f2d0bb41"
     },
-    "dev.crossoverse.transports": {
-      "version": "file:./Crossoverse.Transports/Core",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
-    },
     "jp.hadashikick.vcontainer": {
       "version": "1.13.0",
       "depth": 0,
