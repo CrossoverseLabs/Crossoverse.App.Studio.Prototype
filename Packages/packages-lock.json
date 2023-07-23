@@ -298,12 +298,6 @@
       "source": "local",
       "dependencies": {}
     },
-    "dev.crossoverse.serialization": {
-      "version": "file:Crossoverse.Serialization",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "dev.crossoverse.toolkit.resourceprovider": {
       "version": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.ResourceProvider",
       "depth": 0,
