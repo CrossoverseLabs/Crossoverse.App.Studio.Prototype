@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Crossoverse.Core.Configuration;
+using Crossoverse.Core.Domain.SignalStreaming;
 using UnityEngine;
 
 namespace Crossoverse.Core.Infrastructure.SignalStreaming
@@ -10,23 +12,48 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
         fileName = nameof(TransportConfigLocalRepository))]
     public class TransportConfigLocalRepository : ScriptableObject, IConfigurationRepository<string>
     {
+        [SerializeField] List<StreamingTransportType> _streamingTransportTypes = new();
         [SerializeField] string _photonRealtime_PunVersion = "2.4.0";
         [SerializeField] string _photonRealtime_AppVersion = "";
         [SerializeField] string _photonRealtime_Region = "jp";
-        [SerializeField] string _photonRealtime_AppId = "";
+        [SerializeField] string _photonRealtime_AppId = "<DO_NOT_COMMIT_APP_ID>";
 
         public string Find(string key)
         {
-            var value = key switch
+            if (key.StartsWith(Constants.StreamingTransportSettingsKeyPrefix))
             {
-                "Transport:PhotonRealtime:PunVersion" => _photonRealtime_PunVersion,
-                "Transport:PhotonRealtime:AppVersion" => _photonRealtime_AppVersion,
-                "Transport:PhotonRealtime:Region" => _photonRealtime_Region,
-                "Transport:PhotonRealtime:AppId" => _photonRealtime_AppId,
-                _ => "Unknown",
-            };
+                var splits = key.Split(':');
+                if (splits.Length != 4)
+                {
+                    return string.Empty;
+                }
 
-            return value;
+                var signalType = splits[2];
+                var streamingType = splits[3];
+
+                foreach (var streamingTransportType in _streamingTransportTypes)
+                {
+                    if (streamingTransportType.SignalType.ToString() == signalType
+                    && streamingTransportType.StreamingType.ToString() == streamingType)
+                    {
+                        return streamingTransportType.TransportType.ToString();
+                    }
+                }
+            }
+
+            if (key.StartsWith(Constants.PhotonRealtimeSettingsKeyPrefix))
+            {
+                return key switch
+                {
+                    Constants.PhotonRealtimeSettingsKey_PunVersion => _photonRealtime_PunVersion,
+                    Constants.PhotonRealtimeSettingsKey_AppVersion => _photonRealtime_AppVersion,
+                    Constants.PhotonRealtimeSettingsKey_Region => _photonRealtime_Region,
+                    Constants.PhotonRealtimeSettingsKey_AppId => _photonRealtime_AppId,
+                    _ => string.Empty,
+                };
+            }
+
+            return string.Empty;
         }
 
         public async Task<string> FindAsync(string key)

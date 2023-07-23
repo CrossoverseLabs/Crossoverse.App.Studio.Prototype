@@ -1,3 +1,4 @@
+using System;
 using Crossoverse.Core.Configuration;
 using Crossoverse.Core.Domain.SignalStreaming;
 using Crossoverse.Toolkit.Transports;
@@ -21,30 +22,39 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
         public ITransport Create(string channelId, SignalType signalType, StreamingType streamingType)
         {
-            if (signalType == SignalType.LowFreqEvent)
+            var transportTypeName = _configurationRepository.Find($"{Constants.StreamingTransportSettingsKeyPrefix}:{signalType}:{streamingType}");
+
+            if (!Enum.TryParse(transportTypeName, out TransportType transportType))
             {
-#if CROSSOVERSE_PHOTON_TRANSPORT
-                return CreatePhotonRealtimeTransport(channelId, 5);
-#endif
-            }
-            else if (signalType == SignalType.HighFreqEvent)
-            {
-#if CROSSOVERSE_PHOTON_TRANSPORT
-                return CreatePhotonRealtimeTransport(channelId, 30);
-#endif
+                DevelopmentOnlyLogger.LogError($"[{nameof(SignalStreamingChannelFactory)}] Cannot create transport. TransportType: '{transportTypeName}', SignalType: '{signalType}', StreamingType: '{streamingType}'.");
+                return null;
             }
 
-            DevelopmentOnlyLogger.LogError($"[{nameof(SignalStreamingChannelFactory)}] Could not create transport. StreamingType: {streamingType}, SignalType: {signalType}.");
-            return null;
+#if CROSSOVERSE_PHOTON_TRANSPORT
+            var updateRatePerSecond = signalType switch
+            {
+                SignalType.LowFreqEvent => 5,
+                SignalType.HighFreqEvent => 30,
+                _ => 20,
+            };
+#endif
+
+            return transportType switch
+            {
+#if CROSSOVERSE_PHOTON_TRANSPORT
+                TransportType.PhotonRealtime => CreatePhotonRealtimeTransport(channelId, updateRatePerSecond),
+#endif
+                _ => null,
+            };
         }
 
 #if CROSSOVERSE_PHOTON_TRANSPORT
         private PhotonRealtimeTransport CreatePhotonRealtimeTransport(string channelId, int updateRatePerSecond)
         {
-            var punVersion = _configurationRepository.Find("Transport:PhotonRealtime:PunVersion");
-            var appVersion = _configurationRepository.Find("Transport:PhotonRealtime:AppVersion");
-            var region = _configurationRepository.Find("Transport:PhotonRealtime:Region");
-            var appId = _configurationRepository.Find("Transport:PhotonRealtime:AppId");
+            var punVersion = _configurationRepository.Find(Constants.PhotonRealtimeSettingsKey_PunVersion);
+            var appVersion = _configurationRepository.Find(Constants.PhotonRealtimeSettingsKey_AppVersion);
+            var region = _configurationRepository.Find(Constants.PhotonRealtimeSettingsKey_Region);
+            var appId = _configurationRepository.Find(Constants.PhotonRealtimeSettingsKey_AppId);
 
             var appSettings = new Photon.Realtime.AppSettings()
             {

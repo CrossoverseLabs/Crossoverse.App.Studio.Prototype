@@ -24,7 +24,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
             if (transport is null)
             {
-                DevelopmentOnlyLogger.LogError($"[{nameof(SignalStreamingChannelFactory)}] Cannot create channel. StreamingType: {streamingType}, SignalType: {signalType}.");
+                DevelopmentOnlyLogger.LogError($"[{nameof(SignalStreamingChannelFactory)}] Could not create transport. StreamingType: {streamingType}, SignalType: {signalType}.");
                 return null;
             }
 
