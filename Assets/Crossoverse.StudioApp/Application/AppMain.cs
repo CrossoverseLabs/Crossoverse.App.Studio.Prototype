@@ -13,7 +13,7 @@ namespace Crossoverse.StudioApp.Application
     /// <summary>
     /// Entry point
     /// </summary>
-    public class MainLifecycle : LifetimeScope
+    public class AppMain : LifetimeScope
     {
         [Header("Crossoverse.StudioApp")]
         
