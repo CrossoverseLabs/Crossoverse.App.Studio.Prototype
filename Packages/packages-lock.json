@@ -305,6 +305,13 @@
       "dependencies": {},
       "hash": "bf1a297d06bdc5d8cfc68bfec079ecf0f2d0bb41"
     },
+    "dev.crossoverse.toolkit.serialization": {
+      "version": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.Serialization",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ea9990841b63a54e40fdb6811ed97945188f3b35"
+    },
     "dev.crossoverse.toolkit.transports": {
       "version": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.Transports/Core",
       "depth": 0,
