@@ -1,8 +1,10 @@
-using System.Buffers;
+using System;
+using System.Buffers; 
 using System.Threading;
 using Crossoverse.Toolkit.Transports;
 using Crossoverse.Toolkit.Serialization;
 using Crossoverse.Core.Domain.SignalStreaming;
+using Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal;
 using Cysharp.Threading.Tasks;
 using MessagePack;
 using MessagePipe;
@@ -12,16 +14,16 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
     public sealed class LowFreqEventStreamingChannel : ILowFreqEventStreamingChannel
     {
         public string Id => _id;
-        public SignalType SignalType => SignalType.LowFreqEvent;
+        public SignalType SignalType => SignalType.LowFreqSignal;
         public StreamingType StreamingType => StreamingType.Bidirectional;
 
         public bool IsConnected => _isConnected;
 
         public IBufferedSubscriber<bool> ConnectionStateSubscriber { get; }
-        public ISubscriber<LowFreqEventSignal> OnEventReceived { get; }
+        public ISubscriber<TextMessageSignal> OnTextMessageReceived { get; }
 
-        private readonly IDisposablePublisher<LowFreqEventSignal> _eventPublisher;
         private readonly IDisposableBufferedPublisher<bool> _connectionStatePublisher;
+        private readonly IDisposablePublisher<TextMessageSignal> _textMessageSignalPublisher;
 
         private readonly IMessageSerializer _messageSerializer = new MessagePackMessageSerializer();
         private readonly ITransport _transport;
@@ -39,8 +41,8 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
         {
             _id = id;
             _transport = transport;
-            (_eventPublisher, OnEventReceived) = eventFactory.CreateEvent<LowFreqEventSignal>();
             (_connectionStatePublisher, ConnectionStateSubscriber) = eventFactory.CreateBufferedEvent<bool>(_isConnected);
+            (_textMessageSignalPublisher, OnTextMessageReceived) = eventFactory.CreateEvent<TextMessageSignal>();
         }
 
         public void Initialize()
@@ -52,8 +54,8 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
         public void Dispose()
         {
             _transport.OnReceiveMessage -= OnMessageReceived;
-            _eventPublisher.Dispose();
             _connectionStatePublisher.Dispose();
+            _textMessageSignalPublisher.Dispose();
         }
 
         public async UniTask<bool> ConnectAsync(CancellationToken token = default)
@@ -82,13 +84,19 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             _connectionStatePublisher.Publish(_isConnected);
         }
 
-        public void SendEvent(LowFreqEventSignal signal)
+        public void Send<T>(T signal) where T : ILowFreqSignal
         {
             DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(LowFreqEventStreamingChannel)}] SendEvent</color>");
 
-            using var buffer = ArrayPoolBufferWriter.RentThreadStaticWriter();
+            var signalId = signal switch
+            {
+                TextMessageSignal _ => (int)SignalType.TextMessage,
+                _ => -1,
+            };
 
-            var signalId = (int)SignalType.LowFreqEvent;
+            if (signalId < 0) throw new ArgumentException($"Cannot send signal: {signal.GetType().Name}");
+
+            using var buffer = ArrayPoolBufferWriter.RentThreadStaticWriter();
 
             var writer = new MessagePackWriter(buffer);
             writer.WriteArrayHeader(3);
@@ -114,11 +122,14 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             }
 
             var signalId = messagePackReader.ReadInt32();
-            var networkClientId = messagePackReader.ReadInt32();
+            var transportClientId = messagePackReader.ReadInt32();
             var offset = (int)messagePackReader.Consumed;
 
-            var signal = _messageSerializer.Deserialize<LowFreqEventSignal>(new ReadOnlySequence<byte>(serializedMessage, offset, serializedMessage.Length - offset));
-            _eventPublisher.Publish(signal);
+            if ((int)SignalType.TextMessage == signalId)
+            {
+                var signal = _messageSerializer.Deserialize<TextMessageSignal>(new ReadOnlySequence<byte>(serializedMessage, offset, serializedMessage.Length - offset));
+                _textMessageSignalPublisher.Publish(signal);
+            }
         }
     }
 }

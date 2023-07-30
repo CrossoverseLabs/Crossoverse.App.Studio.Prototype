@@ -28,7 +28,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
                 return null;
             }
 
-            if (signalType == SignalType.LowFreqEvent)
+            if (signalType == SignalType.LowFreqSignal)
             {
                 return new LowFreqEventStreamingChannel(channelId, transport, _eventFactory);
             }
