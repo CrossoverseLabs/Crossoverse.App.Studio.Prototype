@@ -43,6 +43,8 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             {
 #if CROSSOVERSE_PHOTON_TRANSPORT
                 TransportType.PhotonRealtime => CreatePhotonRealtimeTransport(channelId, updateRatePerSecond),
+#else
+                TransportType.PhotonRealtime => throw new NotImplementedException("Package [dev.crossoverse.toolkit.transports.photonrealtime] cannot be found."),
 #endif
                 _ => null,
             };
