@@ -11,7 +11,7 @@ using MessagePipe;
 
 namespace Crossoverse.Core.Infrastructure.SignalStreaming
 {
-    public sealed class LowFreqEventStreamingChannel : ILowFreqEventStreamingChannel
+    public sealed class LowFreqSignalStreamingChannel : ILowFreqSignalStreamingChannel
     {
         public string Id => _id;
         public SignalType SignalType => SignalType.LowFreqSignal;
@@ -32,7 +32,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
         private bool _isConnected;
         private bool _initialized;
 
-        public LowFreqEventStreamingChannel
+        public LowFreqSignalStreamingChannel
         (
             string id,
             ITransport transport,
@@ -64,7 +64,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
             if (_isConnected)
             {
-                DevelopmentOnlyLogger.Log($"<color=orange>[{nameof(LowFreqEventStreamingChannel)}] Already connected.</color>");
+                DevelopmentOnlyLogger.Log($"<color=orange>[{nameof(LowFreqSignalStreamingChannel)}] Already connected.</color>");
                 return true;
             }
 
@@ -86,7 +86,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
         public void Send<T>(T signal) where T : ILowFreqSignal
         {
-            DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(LowFreqEventStreamingChannel)}] SendEvent</color>");
+            DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(LowFreqSignalStreamingChannel)}] SendEvent</color>");
 
             var signalId = signal switch
             {
@@ -111,14 +111,14 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
         private void OnMessageReceived(byte[] serializedMessage)
         {
-            DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(LowFreqEventStreamingChannel)}] OnMessageReceived</color>");
+            DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(LowFreqSignalStreamingChannel)}] OnMessageReceived</color>");
 
             var messagePackReader = new MessagePackReader(serializedMessage);
 
             var arrayLength = messagePackReader.ReadArrayHeader();
             if (arrayLength != 3)
             {
-                DevelopmentOnlyLogger.LogError($"[{nameof(LowFreqEventStreamingChannel)}] The received message is unsupported format.");
+                DevelopmentOnlyLogger.LogError($"[{nameof(LowFreqSignalStreamingChannel)}] The received message is unsupported format.");
             }
 
             var signalId = messagePackReader.ReadInt32();
