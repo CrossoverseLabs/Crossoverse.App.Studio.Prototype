@@ -13,10 +13,10 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
     public class TransportConfigLocalRepository : ScriptableObject, IConfigurationRepository<string>
     {
         [SerializeField] List<StreamingTransportType> _streamingTransportTypes = new();
-        [SerializeField] string _photonRealtime_PunVersion = "2.4.0";
+        [SerializeField] string _photonRealtime_PunVersion = "2.4.1";
         [SerializeField] string _photonRealtime_AppVersion = "";
         [SerializeField] string _photonRealtime_Region = "jp";
-        [SerializeField] string _photonRealtime_AppId = "<DO_NOT_COMMIT_APP_ID>";
+        [SerializeField] string _photonRealtime_AppId = "********** DO_NOT_COMMIT_APP_ID **********";
 
         public string Find(string key)
         {
