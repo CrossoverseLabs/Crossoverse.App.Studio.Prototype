@@ -53,9 +53,16 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
         public void Dispose()
         {
+            DisposeAsync().Forget();
+        }
+
+        public async UniTask DisposeAsync()
+        {
             _transport.OnReceiveMessage -= OnMessageReceived;
+            await DisconnectAsync();
             _connectionStatePublisher.Dispose();
             _textMessageSignalPublisher.Dispose();
+            DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(LowFreqSignalStreamingChannel)}] Disposed.</color>");
         }
 
         public async UniTask<bool> ConnectAsync(CancellationToken token = default)
