@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Crossoverse.Core.Context;
 using Crossoverse.Core.Domain.SignalStreaming;
 using Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal;
+using Crossoverse.Core.Domain.SignalStreaming.BufferedSignal;
 using Crossoverse.Core.Infrastructure.SignalStreaming;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
@@ -19,6 +20,7 @@ namespace Crossoverse.Core.Test
         private SignalStreamingContext _signalStreamingContext;
         private ISignalStreamingChannelFactory _streamingChannelFactory;
         private ILowFreqSignalStreamingChannel _lowFreqSignalStreamingChannel;
+        private IBufferedSignalStreamingChannel _bufferedSignalStreamingChannel;
 
         private Dictionary<string, IDisposable> _channelDisposables = new();
         private IDisposable _contextDisposable;
@@ -46,16 +48,22 @@ namespace Crossoverse.Core.Test
         {
             Initialize();
 
-            var channelId = "LowFreqEventTest";
+            var lowFreqSignalChannel = "LowFreqEventTest";
+            var bufferedSignalChannel = "BufferedSignalTest";
 
-            await _signalStreamingContext.ConnectAsync(channelId, SignalType.LowFreqSignal, StreamingType.Bidirectional);
+            await _signalStreamingContext.ConnectAsync(lowFreqSignalChannel, SignalType.LowFreqSignal, StreamingType.Bidirectional);
+            await _signalStreamingContext.ConnectAsync(bufferedSignalChannel, SignalType.BufferedSignal, StreamingType.Bidirectional);
 
             SendLowFreqEventSignal($"LowFreqSignalTest");
 
             await UniTask.WaitUntil(() => _receivedCount > 0);
-            await _signalStreamingContext.DisconnectAsync(channelId);
+            // await _signalStreamingContext.DisconnectAsync(channelId);
 
             SendLowFreqEventSignal($"LowFreqEventTest2");
+
+            SendCreateObjectSignal();
+
+            SendLowFreqEventSignal($"LowFreqEventTest3");
         }
 
         private void Initialize()
@@ -75,6 +83,13 @@ namespace Crossoverse.Core.Test
                         _lowFreqSignalStreamingChannel = lowFreqSignalStreamingChannel;
                         _lowFreqSignalStreamingChannel.OnTextMessageReceived
                             .Subscribe(OnTextMessageReceived)
+                            .AddTo(channelDisposableBag);
+                    }
+                    else if (streamingChannel is IBufferedSignalStreamingChannel bufferedSignalStreamingChannel)
+                    {
+                        _bufferedSignalStreamingChannel = bufferedSignalStreamingChannel;
+                        _bufferedSignalStreamingChannel.OnCreateObjectSignalReceived
+                            .Subscribe(OnCreateObjectSignalReceived)
                             .AddTo(channelDisposableBag);
                     }
 
@@ -119,6 +134,18 @@ namespace Crossoverse.Core.Test
             Debug.Log($"----------");
         }
 
+        private void SendCreateObjectSignal()
+        {
+            var timestampMilliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            var signal = new CreateObjectSignal()
+            {
+                OriginalObjectId = Guid.NewGuid(),
+                GeneratedBy = Guid.NewGuid(),
+                OriginTimestampMilliseconds = timestampMilliseconds,
+            };
+            _bufferedSignalStreamingChannel.Send(signal);
+        }
+
         private void OnTextMessageReceived(TextMessageSignal signal)
         {
             var format = "yyyy/MM/dd HH:mm:ss.fff";
@@ -130,6 +157,16 @@ namespace Crossoverse.Core.Test
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Received message: \"{signal.Message}\"</color>");
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Origin timestamp: {originTimestamp}</color>");
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Now timestamp: {nowTimestamp}</color>");
+            Debug.Log($"----------");
+        }
+
+        private void OnCreateObjectSignalReceived(CreateObjectSignal signal)
+        {
+            var format = "yyyy/MM/dd HH:mm:ss.fff";
+            var originTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(signal.OriginTimestampMilliseconds).ToString(format);
+            Debug.Log($"----------");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] CreateObjectSignal: \"{signal.OriginalObjectId}\"</color>");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Origin timestamp: \"{originTimestamp}\"</color>");
             Debug.Log($"----------");
         }
     }
