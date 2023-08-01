@@ -28,6 +28,11 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
                 return null;
             }
 
+            if (signalType == SignalType.BufferedSignal)
+            {
+                return new BufferedSignalStreamingChannel(channelId, transport, _eventFactory);
+            }
+            else
             if (signalType == SignalType.LowFreqSignal)
             {
                 return new LowFreqSignalStreamingChannel(channelId, transport, _eventFactory);
