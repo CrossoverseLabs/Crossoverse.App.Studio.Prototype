@@ -16,6 +16,9 @@ MonoBehaviour:
   - SignalType: 64
     StreamingType: 1
     TransportType: 0
+  - SignalType: 0
+    StreamingType: 1
+    TransportType: 0
   - SignalType: 128
     StreamingType: 2
     TransportType: 0
