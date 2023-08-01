@@ -4,6 +4,7 @@ namespace Crossoverse.Core.Domain.SignalStreaming
     {
         // Buffered
         BufferedSignal = 0,
+        CreateObject = BufferedSignal + 1,
 
         // Low Frequency
         LowFreqSignal = 64,
