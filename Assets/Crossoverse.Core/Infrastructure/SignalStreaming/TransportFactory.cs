@@ -33,6 +33,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 #if CROSSOVERSE_PHOTON_TRANSPORT
             var updateRatePerSecond = signalType switch
             {
+                SignalType.BufferedSignal => 5,
                 SignalType.LowFreqSignal => 5,
                 SignalType.HighFreqSignal => 30,
                 _ => 20,
