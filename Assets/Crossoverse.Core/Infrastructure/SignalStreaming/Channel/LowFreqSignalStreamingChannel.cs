@@ -113,7 +113,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
             _messageSerializer.Serialize(buffer, signal);
 
-            _transport.Send(buffer.WrittenSpan.ToArray());
+            _transport.Send(buffer.WrittenSpan.ToArray(), BufferingType.DoNotBuffering, BroadcastingType.All);
         }
 
         private void OnMessageReceived(byte[] serializedMessage)
