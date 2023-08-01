@@ -47,9 +47,10 @@ namespace MessagePack.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(1)
+            lookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(2)
             {
-                { typeof(global::Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal.TextMessageSignal), 0 },
+                { typeof(global::Crossoverse.Core.Domain.SignalStreaming.BufferedSignal.CreateObjectSignal), 0 },
+                { typeof(global::Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal.TextMessageSignal), 1 },
             };
         }
 
@@ -63,7 +64,8 @@ namespace MessagePack.Resolvers
 
             switch (key)
             {
-                case 0: return new MessagePack.Formatters.Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal.TextMessageSignalFormatter();
+                case 0: return new MessagePack.Formatters.Crossoverse.Core.Domain.SignalStreaming.BufferedSignal.CreateObjectSignalFormatter();
+                case 1: return new MessagePack.Formatters.Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal.TextMessageSignalFormatter();
                 default: return null;
             }
         }
