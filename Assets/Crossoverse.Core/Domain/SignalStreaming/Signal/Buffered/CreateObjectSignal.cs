@@ -7,18 +7,18 @@ namespace Crossoverse.Core.Domain.SignalStreaming.BufferedSignal
     public sealed class CreateObjectSignal : IBufferedSignal
     {
         [Key(0)]
-        public Guid OriginalObjectId { get; }
+        public Guid OriginalObjectId { get; set; }
 
         [Key(1)]
-        public int InstanceId { get; }
+        public int InstanceId { get; set; }
 
         [Key(2)]
-        public int OwnerClientId { get; }
+        public int OwnerClientId { get; set; }
 
         [Key(3)]
-        public Guid GeneratedBy { get; }
+        public Guid GeneratedBy { get; set; }
 
         [Key(4)]
-        public long OriginTimestampMilliseconds { get; }
+        public long OriginTimestampMilliseconds { get; set; }
     }
 }
