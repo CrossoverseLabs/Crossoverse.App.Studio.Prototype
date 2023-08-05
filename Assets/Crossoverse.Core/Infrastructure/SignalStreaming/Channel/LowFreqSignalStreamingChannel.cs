@@ -20,13 +20,10 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
         public bool IsConnected => _isConnected;
 
         public IBufferedSubscriber<bool> ConnectionStateSubscriber { get; }
-        // public ISubscriber<DisconnectionSignal> OnDisconnected { get; }
         public ISubscriber<TextMessageSignal> OnTextMessageReceived { get; }
-        public ISubscriber<DestroyObjectSignal> OnDestroyObjectSignalReceived { get; }
 
         private readonly IDisposableBufferedPublisher<bool> _connectionStatePublisher;
         private readonly IDisposablePublisher<TextMessageSignal> _textMessageSignalPublisher;
-        private readonly IDisposablePublisher<DestroyObjectSignal> _destroyObjectSignalPublisher;
 
         private readonly IMessageSerializer _messageSerializer = new MessagePackMessageSerializer();
         private readonly ITransport _transport;
@@ -46,7 +43,6 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             _transport = transport;
             (_connectionStatePublisher, ConnectionStateSubscriber) = eventFactory.CreateBufferedEvent<bool>(_isConnected);
             (_textMessageSignalPublisher, OnTextMessageReceived) = eventFactory.CreateEvent<TextMessageSignal>();
-            (_destroyObjectSignalPublisher, OnDestroyObjectSignalReceived) = eventFactory.CreateEvent<DestroyObjectSignal>();
         }
 
         public void Initialize()
