@@ -16,9 +16,12 @@ namespace Crossoverse.Core.Domain.SignalStreaming.BufferedSignal
         public int OwnerClientId { get; set; }
 
         [Key(3)]
-        public Guid GeneratedBy { get; set; }
+        public object FilterKey { get; set; }
 
         [Key(4)]
+        public Guid GeneratedBy { get; set; }
+
+        [Key(5)]
         public long OriginTimestampMilliseconds { get; set; }
     }
 }

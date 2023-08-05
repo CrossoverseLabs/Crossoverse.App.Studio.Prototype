@@ -113,7 +113,22 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
             _messageSerializer.Serialize(buffer, signal);
 
-            _transport.Send(buffer.WrittenSpan.ToArray(), BufferingType.AddToBuffer, BroadcastingType.All);
+            var bufferingKey = new BufferingKey()
+            {
+                FirstKey = signalId,
+                SecondKey = signal.GeneratedBy.ToByteArray(),
+                ThirdKey = signal.FilterKey,
+            };
+
+            var sendOptions = new SendOptions()
+            {
+                BroadcastingType = BroadcastingType.All,
+                BufferingType = BufferingType.AddToBuffer,
+                BufferingKey = bufferingKey,
+                Reliability = true,
+            };
+
+            _transport.Send(buffer.WrittenSpan.ToArray(), sendOptions);
         }
 
         private void OnTransportMessageReceived(byte[] serializedMessage)
