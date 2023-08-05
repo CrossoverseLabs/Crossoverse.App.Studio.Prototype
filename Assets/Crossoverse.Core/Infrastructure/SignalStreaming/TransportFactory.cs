@@ -73,9 +73,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
                 joinParameters: new PhotonRealtimeJoinParameters(){ RoomName = channelId },
                 targetFrameRate: updateRatePerSecond,
                 isBackgroundThread: true,
-                protocol: ExitGames.Client.Photon.ConnectionProtocol.Udp,
-                receiverGroup: Photon.Realtime.ReceiverGroup.All
-                // receiverGroup: Photon.Realtime.ReceiverGroup.Others
+                protocol: ExitGames.Client.Photon.ConnectionProtocol.Udp
             );
         }
 #endif
