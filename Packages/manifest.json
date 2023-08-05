@@ -2,7 +2,7 @@
   "dependencies": {
     "dev.crossoverse.core.unity": "file:./Crossoverse.Core/Unity",
     "dev.crossoverse.toolkit.serialization": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.Serialization",
-    "dev.crossoverse.toolkit.transports": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.Transports/Core",
+    "dev.crossoverse.toolkit.transports": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.Transports/Core#20230805.2310",
     "dev.crossoverse.toolkit.resourceprovider": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.ResourceProvider",
     "com.vrmc.gltf": "https://github.com/vrm-c/UniVRM.git?path=/Assets/UniGLTF#v0.112.0",
     "com.vrmc.univrm": "https://github.com/vrm-c/UniVRM.git?path=/Assets/VRM#v0.112.0",
