@@ -21,9 +21,11 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
 
         public IBufferedSubscriber<bool> ConnectionStateSubscriber { get; }
         public ISubscriber<TextMessageSignal> OnTextMessageReceived { get; }
+        public ISubscriber<DestroyObjectSignal> OnDestroyObjectSignalReceived { get; }
 
         private readonly IDisposableBufferedPublisher<bool> _connectionStatePublisher;
         private readonly IDisposablePublisher<TextMessageSignal> _textMessageSignalPublisher;
+        private readonly IDisposablePublisher<DestroyObjectSignal> _destroyObjectSignalPublisher;
 
         private readonly IMessageSerializer _messageSerializer = new MessagePackMessageSerializer();
         private readonly ITransport _transport;
@@ -43,6 +45,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             _transport = transport;
             (_connectionStatePublisher, ConnectionStateSubscriber) = eventFactory.CreateBufferedEvent<bool>(_isConnected);
             (_textMessageSignalPublisher, OnTextMessageReceived) = eventFactory.CreateEvent<TextMessageSignal>();
+            (_destroyObjectSignalPublisher, OnDestroyObjectSignalReceived) = eventFactory.CreateEvent<DestroyObjectSignal>();
         }
 
         public void Initialize()
@@ -62,6 +65,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             await DisconnectAsync();
             _connectionStatePublisher.Dispose();
             _textMessageSignalPublisher.Dispose();
+            _destroyObjectSignalPublisher.Dispose();
             DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(LowFreqSignalStreamingChannel)}] Disposed.</color>");
         }
 
@@ -98,6 +102,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             var signalId = signal switch
             {
                 TextMessageSignal _ => (int)SignalType.TextMessage,
+                DestroyObjectSignal _ => (int)SignalType.DestroyObject,
                 _ => -1,
             };
 
@@ -143,6 +148,16 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             {
                 var signal = _messageSerializer.Deserialize<TextMessageSignal>(new ReadOnlySequence<byte>(serializedMessage, offset, serializedMessage.Length - offset));
                 _textMessageSignalPublisher.Publish(signal);
+            }
+            else
+            if ((int)SignalType.DestroyObject == signalId)
+            {
+                var signal = _messageSerializer.Deserialize<DestroyObjectSignal>(new ReadOnlySequence<byte>(serializedMessage, offset, serializedMessage.Length - offset));
+                _destroyObjectSignalPublisher.Publish(signal);
+            }
+            else
+            {
+                DevelopmentOnlyLogger.LogError($"[{nameof(LowFreqSignalStreamingChannel)}] The received message is unsupported format.");
             }
         }
     }
