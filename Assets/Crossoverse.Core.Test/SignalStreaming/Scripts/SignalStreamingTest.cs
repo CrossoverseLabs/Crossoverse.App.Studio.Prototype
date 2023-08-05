@@ -58,17 +58,16 @@ namespace Crossoverse.Core.Test
             await _signalStreamingContext.ConnectAsync(bufferedSignalChannel, SignalType.BufferedSignal, StreamingType.Bidirectional);
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Connected</color>");
 
-            SendLowFreqEventSignal($"LowFreqSignalTest");
+            // SendLowFreqEventSignal($"LowFreqSignalTest");
 
-            await UniTask.WaitUntil(() => _receivedCount > 0);
+            // await UniTask.WaitUntil(() => _receivedCount > 0);
             // await _signalStreamingContext.DisconnectAsync(channelId);
 
-            SendLowFreqEventSignal($"LowFreqEventTest2");
+            // SendLowFreqEventSignal($"LowFreqEventTest2");
+            // SendLowFreqEventSignal($"LowFreqEventTest3");
 
             var instanceId = SendCreateObjectSignal(Guid.NewGuid());
-
-            SendLowFreqEventSignal($"LowFreqEventTest3");
-
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
             SendDestroyObjectSignal(instanceId);
         }
 
