@@ -116,7 +116,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             var bufferingKey = new BufferingKey()
             {
                 FirstKey = signalId,
-                SecondKey = signal.GeneratedBy.ToByteArray(),
+                SecondKey = signal.GeneratedBy.ToString(),
                 ThirdKey = signal.FilterKey,
             };
 
@@ -136,7 +136,7 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             var bufferingKey = new BufferingKey()
             {
                 FirstKey = (int)signalType,
-                SecondKey = signalGeneratedBy.ToByteArray(),
+                SecondKey = signalGeneratedBy.ToString(),
                 ThirdKey = filterKey,
             };
 
