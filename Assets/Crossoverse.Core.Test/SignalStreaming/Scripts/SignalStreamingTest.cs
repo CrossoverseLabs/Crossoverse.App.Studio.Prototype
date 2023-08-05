@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO.Hashing;
+using System.Runtime.InteropServices;
 using Crossoverse.Core.Context;
 using Crossoverse.Core.Domain.SignalStreaming;
 using Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal;
@@ -25,6 +27,7 @@ namespace Crossoverse.Core.Test
         private Dictionary<string, IDisposable> _channelDisposables = new();
         private IDisposable _contextDisposable;
 
+        private Guid _clientId;
         private int _receivedCount;
 
         void Awake()
@@ -53,6 +56,7 @@ namespace Crossoverse.Core.Test
 
             await _signalStreamingContext.ConnectAsync(lowFreqSignalChannel, SignalType.LowFreqSignal, StreamingType.Bidirectional);
             await _signalStreamingContext.ConnectAsync(bufferedSignalChannel, SignalType.BufferedSignal, StreamingType.Bidirectional);
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Connected</color>");
 
             SendLowFreqEventSignal($"LowFreqSignalTest");
 
@@ -61,13 +65,17 @@ namespace Crossoverse.Core.Test
 
             SendLowFreqEventSignal($"LowFreqEventTest2");
 
-            SendCreateObjectSignal();
+            var instanceId = SendCreateObjectSignal(Guid.NewGuid());
 
             SendLowFreqEventSignal($"LowFreqEventTest3");
+
+            SendDestroyObjectSignal(instanceId);
         }
 
         private void Initialize()
         {
+            _clientId = Guid.NewGuid();
+
             _streamingChannelFactory = new SignalStreamingChannelFactory(new TransportFactory(_transportConfigRepository), _eventFactory);
             _signalStreamingContext = new SignalStreamingContext(_streamingChannelFactory, _eventFactory);
 
@@ -83,6 +91,9 @@ namespace Crossoverse.Core.Test
                         _lowFreqSignalStreamingChannel = lowFreqSignalStreamingChannel;
                         _lowFreqSignalStreamingChannel.OnTextMessageReceived
                             .Subscribe(OnTextMessageReceived)
+                            .AddTo(channelDisposableBag);
+                        _lowFreqSignalStreamingChannel.OnDestroyObjectSignalReceived
+                            .Subscribe(OnDestroyObjectSignalReceived)
                             .AddTo(channelDisposableBag);
                     }
                     else if (streamingChannel is IBufferedSignalStreamingChannel bufferedSignalStreamingChannel)
@@ -124,7 +135,7 @@ namespace Crossoverse.Core.Test
             var signal = new TextMessageSignal()
             {
                 Message = message,
-                GeneratedBy = Guid.NewGuid(),
+                GeneratedBy = _clientId,
                 OriginTimestampMilliseconds = timestampMilliseconds,
             };
             _lowFreqSignalStreamingChannel.Send(signal);
@@ -134,16 +145,36 @@ namespace Crossoverse.Core.Test
             Debug.Log($"----------");
         }
 
-        private void SendCreateObjectSignal()
+        private int SendCreateObjectSignal(Guid originalObjectId)
         {
-            var timestampMilliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            var instanceId = BitConverter.ToInt32(XxHash32.Hash(Guid.NewGuid().ToByteArray()));
+
             var signal = new CreateObjectSignal()
             {
-                OriginalObjectId = Guid.NewGuid(),
-                GeneratedBy = Guid.NewGuid(),
-                OriginTimestampMilliseconds = timestampMilliseconds,
+                OriginalObjectId = originalObjectId,
+                InstanceId = instanceId,
+                FilterKey = instanceId,
+                GeneratedBy = _clientId,
+                OriginTimestampMilliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
             };
+
             _bufferedSignalStreamingChannel.Send(signal);
+
+            return instanceId;
+        }
+
+        private void SendDestroyObjectSignal(int instanceId)
+        {
+            _bufferedSignalStreamingChannel.RemoveBufferedSignal(SignalType.CreateObject, _clientId, instanceId);
+
+            var signal = new DestroyObjectSignal()
+            {
+                InstanceId = instanceId,
+                GeneratedBy = _clientId,
+                OriginTimestampMilliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
+            };
+
+            _lowFreqSignalStreamingChannel.Send(signal);
         }
 
         private void OnTextMessageReceived(TextMessageSignal signal)
@@ -165,7 +196,20 @@ namespace Crossoverse.Core.Test
             var format = "yyyy/MM/dd HH:mm:ss.fff";
             var originTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(signal.OriginTimestampMilliseconds).ToString(format);
             Debug.Log($"----------");
-            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] CreateObjectSignal: \"{signal.OriginalObjectId}\"</color>");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] CreateObjectSignal</color>");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Original object id: \"{signal.OriginalObjectId}\"</color>");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Instance id: \"{signal.InstanceId}\"</color>");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Origin timestamp: \"{originTimestamp}\"</color>");
+            Debug.Log($"----------");
+        }
+
+        private void OnDestroyObjectSignalReceived(DestroyObjectSignal signal)
+        {
+            var format = "yyyy/MM/dd HH:mm:ss.fff";
+            var originTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(signal.OriginTimestampMilliseconds).ToString(format);
+            Debug.Log($"----------");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] DestroyObjectSignal</color>");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Instance id: \"{signal.InstanceId}\"</color>");
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Origin timestamp: \"{originTimestamp}\"</color>");
             Debug.Log($"----------");
         }
