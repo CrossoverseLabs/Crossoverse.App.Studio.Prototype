@@ -131,6 +131,26 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             _transport.Send(buffer.WrittenSpan.ToArray(), sendOptions);
         }
 
+        public void RemoveBufferedSignal(SignalType signalType, Guid signalGeneratedBy, object filterKey)
+        {
+            var bufferingKey = new BufferingKey()
+            {
+                FirstKey = (int)signalType,
+                SecondKey = signalGeneratedBy.ToByteArray(),
+                ThirdKey = filterKey,
+            };
+
+            var sendOptions = new SendOptions()
+            {
+                BroadcastingType = BroadcastingType.All,
+                BufferingType = BufferingType.RemoveFromBuffer,
+                BufferingKey = bufferingKey,
+                Reliability = true,
+            };
+
+            _transport.Send(null, sendOptions);
+        }
+
         private void OnTransportMessageReceived(byte[] serializedMessage)
         {
             DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(BufferedSignalStreamingChannel)}] OnTransportMessageReceived</color>");

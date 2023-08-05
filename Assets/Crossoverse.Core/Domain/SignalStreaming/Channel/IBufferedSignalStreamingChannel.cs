@@ -1,3 +1,4 @@
+using System;
 using MessagePipe;
 
 namespace Crossoverse.Core.Domain.SignalStreaming
@@ -6,5 +7,6 @@ namespace Crossoverse.Core.Domain.SignalStreaming
     {
         ISubscriber<BufferedSignal.CreateObjectSignal> OnCreateObjectSignalReceived { get; }
         void Send<T>(T signal) where T : IBufferedSignal;
+        void RemoveBufferedSignal(SignalType signalType, Guid signalGeneratedBy, object filterKey);
     }
 }
