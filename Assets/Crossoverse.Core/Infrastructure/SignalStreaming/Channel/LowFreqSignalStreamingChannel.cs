@@ -62,7 +62,6 @@ namespace Crossoverse.Core.Infrastructure.SignalStreaming
             await DisconnectAsync();
             _connectionStatePublisher.Dispose();
             _textMessageSignalPublisher.Dispose();
-            _destroyObjectSignalPublisher.Dispose();
             DevelopmentOnlyLogger.Log($"<color=lime>[{nameof(LowFreqSignalStreamingChannel)}] Disposed.</color>");
         }
 
