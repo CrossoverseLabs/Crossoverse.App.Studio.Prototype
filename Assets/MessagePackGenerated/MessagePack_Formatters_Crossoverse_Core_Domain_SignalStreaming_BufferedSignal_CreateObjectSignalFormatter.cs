@@ -28,10 +28,11 @@ namespace MessagePack.Formatters.Crossoverse.Core.Domain.SignalStreaming.Buffere
             }
 
             global::MessagePack.IFormatterResolver formatterResolver = options.Resolver;
-            writer.WriteArrayHeader(5);
+            writer.WriteArrayHeader(6);
             global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<global::System.Guid>(formatterResolver).Serialize(ref writer, value.OriginalObjectId, options);
             writer.Write(value.InstanceId);
             writer.Write(value.OwnerClientId);
+            global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<object>(formatterResolver).Serialize(ref writer, value.FilterKey, options);
             global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<global::System.Guid>(formatterResolver).Serialize(ref writer, value.GeneratedBy, options);
             writer.Write(value.OriginTimestampMilliseconds);
         }
@@ -62,9 +63,12 @@ namespace MessagePack.Formatters.Crossoverse.Core.Domain.SignalStreaming.Buffere
                         ____result.OwnerClientId = reader.ReadInt32();
                         break;
                     case 3:
-                        ____result.GeneratedBy = global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<global::System.Guid>(formatterResolver).Deserialize(ref reader, options);
+                        ____result.FilterKey = global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<object>(formatterResolver).Deserialize(ref reader, options);
                         break;
                     case 4:
+                        ____result.GeneratedBy = global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<global::System.Guid>(formatterResolver).Deserialize(ref reader, options);
+                        break;
+                    case 5:
                         ____result.OriginTimestampMilliseconds = reader.ReadInt64();
                         break;
                     default:
