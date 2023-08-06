@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Crossoverse.Core.Configuration;
 using Crossoverse.Core.Domain.SignalStreaming;
+using Crossoverse.Core.Infrastructure.SignalStreaming;
 using UnityEngine;
 
-namespace Crossoverse.Core.Infrastructure.SignalStreaming
+namespace Crossoverse.Core.Unity.Infrastructure.SignalStreaming
 {
     [CreateAssetMenu(
         menuName = "Crossoverse/LocalRepository/" + nameof(TransportConfigLocalRepository),
