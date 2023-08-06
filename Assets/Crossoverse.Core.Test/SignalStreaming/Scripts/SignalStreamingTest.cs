@@ -7,6 +7,7 @@ using Crossoverse.Core.Domain.SignalStreaming;
 using Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal;
 using Crossoverse.Core.Domain.SignalStreaming.BufferedSignal;
 using Crossoverse.Core.Infrastructure.SignalStreaming;
+using Crossoverse.Core.Unity.Behaviour;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 using UnityEngine;
@@ -16,6 +17,9 @@ namespace Crossoverse.Core.Test
     public class SignalStreamingTest : MonoBehaviour
     {
         [SerializeField] TransportConfigLocalRepository _transportConfigRepository;
+        [SerializeField] List<GuidComponent> _prefabs;
+
+        private readonly Dictionary<int, GameObject> _instances = new();
 
         private EventFactory _eventFactory;
 
@@ -66,8 +70,15 @@ namespace Crossoverse.Core.Test
             // SendLowFreqEventSignal($"LowFreqEventTest2");
             // SendLowFreqEventSignal($"LowFreqEventTest3");
 
-            var instanceId = SendCreateObjectSignal(Guid.NewGuid());
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            Debug.Log($"----------");
+            for (var i = 0; i < _prefabs.Count; i++)
+            {
+                Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] prefabs[{i}].Guid: {_prefabs[i].Guid}</color>");
+            }
+            Debug.Log($"----------");
+
+            var instanceId = SendCreateObjectSignal(_prefabs[0].Guid);
+            await UniTask.Delay(TimeSpan.FromSeconds(5));
             SendDestroyObjectSignal(instanceId);
         }
 
@@ -92,14 +103,14 @@ namespace Crossoverse.Core.Test
                             .Subscribe(OnTextMessageReceived)
                             .AddTo(channelDisposableBag);
                         _lowFreqSignalStreamingChannel.OnDestroyObjectSignalReceived
-                            .Subscribe(OnDestroyObjectSignalReceived)
+                            .Subscribe(OnDestroyObjectSignalReceivedAsync)
                             .AddTo(channelDisposableBag);
                     }
                     else if (streamingChannel is IBufferedSignalStreamingChannel bufferedSignalStreamingChannel)
                     {
                         _bufferedSignalStreamingChannel = bufferedSignalStreamingChannel;
                         _bufferedSignalStreamingChannel.OnCreateObjectSignalReceived
-                            .Subscribe(OnCreateObjectSignalReceived)
+                            .Subscribe(OnCreateObjectSignalReceivedAsync)
                             .AddTo(channelDisposableBag);
                     }
 
@@ -190,8 +201,10 @@ namespace Crossoverse.Core.Test
             Debug.Log($"----------");
         }
 
-        private void OnCreateObjectSignalReceived(CreateObjectSignal signal)
+        private async void OnCreateObjectSignalReceivedAsync(CreateObjectSignal signal)
         {
+            await UniTask.SwitchToMainThread();
+
             var format = "yyyy/MM/dd HH:mm:ss.fff";
             var originTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(signal.OriginTimestampMilliseconds).ToString(format);
             Debug.Log($"----------");
@@ -200,10 +213,23 @@ namespace Crossoverse.Core.Test
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Instance id: \"{signal.InstanceId}\"</color>");
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Origin timestamp: \"{originTimestamp}\"</color>");
             Debug.Log($"----------");
+
+            for (var i = 0; i < _prefabs.Count; i++)
+            {
+                if (_prefabs[i].Guid == signal.OriginalObjectId)
+                {
+                    Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Instantiate prefab[{i}]</color>");
+                    var instance = GameObject.Instantiate(_prefabs[i].gameObject);
+                    _instances.TryAdd(signal.InstanceId, instance);
+                }
+            }
+            Debug.Log($"----------");
         }
 
-        private void OnDestroyObjectSignalReceived(DestroyObjectSignal signal)
+        private async void OnDestroyObjectSignalReceivedAsync(DestroyObjectSignal signal)
         {
+            await UniTask.SwitchToMainThread();
+
             var format = "yyyy/MM/dd HH:mm:ss.fff";
             var originTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(signal.OriginTimestampMilliseconds).ToString(format);
             Debug.Log($"----------");
@@ -211,6 +237,11 @@ namespace Crossoverse.Core.Test
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Instance id: \"{signal.InstanceId}\"</color>");
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Origin timestamp: \"{originTimestamp}\"</color>");
             Debug.Log($"----------");
+
+            if (_instances.Remove(signal.InstanceId, out var instance))
+            {
+                GameObject.Destroy(instance);
+            }
         }
     }
 }

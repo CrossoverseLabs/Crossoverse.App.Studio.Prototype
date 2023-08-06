@@ -236,3 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _transportConfigRepository: {fileID: 11400000, guid: 8572741a5e1a5694bbeec8dab1811111, type: 2}
+  _prefabs:
+  - {fileID: 5003107216567906508, guid: 3a12572b06d159649aa5d39c8f556485, type: 3}
+  - {fileID: 2333193566316447079, guid: 8650554e41e815b42a1448c54f98cc2f, type: 3}
+  - {fileID: 6826949390792672290, guid: d4dfe028fe7910042aaeb083a3e3a1ec, type: 3}
