@@ -8,6 +8,7 @@ using Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal;
 using Crossoverse.Core.Domain.SignalStreaming.BufferedSignal;
 using Crossoverse.Core.Infrastructure.SignalStreaming;
 using Crossoverse.Core.Unity.Behaviour;
+using Crossoverse.Core.Unity.Infrastructure.SignalStreaming;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 using UnityEngine;
