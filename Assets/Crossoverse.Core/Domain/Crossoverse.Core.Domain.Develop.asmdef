@@ -1,9 +1,7 @@
 {
-    "name": "Crossoverse.Core.Unity.Behaviour",
+    "name": "Crossoverse.Core.Domain.Develop",
     "rootNamespace": "",
-    "references": [
-        "Crossoverse.Core.Domain"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
