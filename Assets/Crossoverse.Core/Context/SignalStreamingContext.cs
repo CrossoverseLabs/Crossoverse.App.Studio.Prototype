@@ -12,11 +12,15 @@ namespace Crossoverse.Core.Context
         public ISubscriber<ISignalStreamingChannel> OnStreamingChannelAdded { get; }
         public ISubscriber<string> OnStreamingChannelRemoved { get; }
 
+        public Guid StreamingClientId => _streamingClientId;
+
         private readonly IDisposablePublisher<ISignalStreamingChannel> _streamingChannelAddedEventPublisher;
         private readonly IDisposablePublisher<string> _streamingChannelRemovedEventPublisher;
 
         private readonly ISignalStreamingChannelFactory _streamingChannelFactory;
         private readonly Dictionary<string, ISignalStreamingChannel> _streamingChannels = new();
+
+        private Guid _streamingClientId = new();
 
         public SignalStreamingContext
         (
