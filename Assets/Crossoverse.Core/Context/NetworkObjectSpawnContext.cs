@@ -109,7 +109,7 @@ namespace Crossoverse.Core.Context
             _lowFreqSignalStreamingChannel.Send(signal);
         }
 
-        private async void OnCreateObjectSignalReceivedAsync(CreateObjectSignal signal)
+        private async void HandleCreateObjectSignalAsync(CreateObjectSignal signal)
         {
             await UniTask.SwitchToMainThread();
 
@@ -124,7 +124,7 @@ namespace Crossoverse.Core.Context
             }
         }
 
-        private async void OnDestroyObjectSignalReceivedAsync(DestroyObjectSignal signal)
+        private async void HandleDestroyObjectSignalAsync(DestroyObjectSignal signal)
         {
             await UniTask.SwitchToMainThread();
 
@@ -149,7 +149,7 @@ namespace Crossoverse.Core.Context
                         _bufferedSignalStreamingChannel = bufferedSignalStreamingChannel;
 
                         _bufferedSignalStreamingChannel.OnCreateObjectSignalReceived
-                            .Subscribe(OnCreateObjectSignalReceivedAsync)
+                            .Subscribe(HandleCreateObjectSignalAsync)
                             .AddTo(channelDisposableBag);
                     }
                     else if (streamingChannel is ILowFreqSignalStreamingChannel lowFreqSignalStreamingChannel)
@@ -157,7 +157,7 @@ namespace Crossoverse.Core.Context
                         _lowFreqSignalStreamingChannel = lowFreqSignalStreamingChannel;
 
                         _lowFreqSignalStreamingChannel.OnDestroyObjectSignalReceived
-                            .Subscribe(OnDestroyObjectSignalReceivedAsync)
+                            .Subscribe(HandleDestroyObjectSignalAsync)
                             .AddTo(channelDisposableBag);
                     }
 
