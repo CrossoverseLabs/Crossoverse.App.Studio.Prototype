@@ -183,7 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: Crossoverse.StudioApp.Application.MainLifecycle
+    TypeName: Crossoverse.StudioApp.Application.AppMain
   autoRun: 1
   autoInjectGameObjects: []
   _entranceScreenView: {fileID: 112352293}
