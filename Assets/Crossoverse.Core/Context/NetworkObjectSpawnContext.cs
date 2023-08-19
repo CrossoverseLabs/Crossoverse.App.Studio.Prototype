@@ -4,7 +4,7 @@ using System.IO.Hashing;
 using Crossoverse.Core.Domain.SignalStreaming;
 using Crossoverse.Core.Domain.SignalStreaming.BufferedSignal;
 using Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal;
-using Crossoverse.Core.Unity.Behaviour;
+using Crossoverse.Core.Unity.Behaviour.Multiplayer;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 using UnityEngine;
