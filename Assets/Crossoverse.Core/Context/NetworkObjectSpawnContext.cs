@@ -1,28 +1,27 @@
 using System;
 using System.Collections.Generic;
-using System.IO.Hashing;
+using Crossoverse.Core.Domain.Multiplayer;
 using Crossoverse.Core.Domain.SignalStreaming;
 using Crossoverse.Core.Domain.SignalStreaming.BufferedSignal;
 using Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal;
-using Crossoverse.Core.Unity.Behaviour.Multiplayer;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
-using UnityEngine;
 
 namespace Crossoverse.Core.Context
 {
     public sealed class NetworkObjectSpawnContext : IDisposable
     {
-        public ISubscriber<GameObject> OnCreateObject { get; }
-        public ISubscriber<GameObject> OnDestroyingObject { get; }
+        public ISubscriber<INetworkObject> OnCreateObject { get; }
+        public ISubscriber<INetworkObject> OnDestroyingObject { get; }
 
-        private readonly IDisposablePublisher<GameObject> _createObjectEventPublisher;
-        private readonly IDisposablePublisher<GameObject> _destroyingObjectEventPublisher;
+        private readonly IDisposablePublisher<INetworkObject> _createObjectEventPublisher;
+        private readonly IDisposablePublisher<INetworkObject> _destroyingObjectEventPublisher;
 
-        private readonly List<GuidComponent> _prefabs = new();
-        private readonly Dictionary<int, GameObject> _instances = new();
+        private readonly List<IGuidComponent> _prefabs = new();
+        private readonly Dictionary<int, INetworkObject> _instances = new();
 
         private readonly SignalStreamingContext _signalStreamingContext;
+        private readonly INetworkObjectFactory _networkObjectFactory;
 
         private IBufferedSignalStreamingChannel _bufferedSignalStreamingChannel;
         private ILowFreqSignalStreamingChannel _lowFreqSignalStreamingChannel;
@@ -33,12 +32,14 @@ namespace Crossoverse.Core.Context
         public NetworkObjectSpawnContext
         (
             SignalStreamingContext signalStreamingContext,
+            INetworkObjectFactory networkObjectFactory,
             EventFactory eventFactory
         )
         {
             _signalStreamingContext = signalStreamingContext;
-            (_createObjectEventPublisher, OnCreateObject) = eventFactory.CreateEvent<GameObject>();
-            (_destroyingObjectEventPublisher, OnDestroyingObject) = eventFactory.CreateEvent<GameObject>();
+            _networkObjectFactory = networkObjectFactory;
+            (_createObjectEventPublisher, OnCreateObject) = eventFactory.CreateEvent<INetworkObject>();
+            (_destroyingObjectEventPublisher, OnDestroyingObject) = eventFactory.CreateEvent<INetworkObject>();
         }
 
         public void Initialize()
@@ -51,7 +52,7 @@ namespace Crossoverse.Core.Context
             foreach (var instance in _instances.Values)
             {
                 _destroyingObjectEventPublisher.Publish(instance);
-                GameObject.Destroy(instance);
+                instance.Dispose();
             }
 
             _instances.Clear();
@@ -67,19 +68,19 @@ namespace Crossoverse.Core.Context
             _contextDisposable.Dispose();
         }
 
-        public void AddPrefabs(List<GuidComponent> prefabs)
+        public void AddPrefabs(List<IGuidComponent> prefabs)
         {
             _prefabs.AddRange(prefabs);
         }
 
-        public bool TryGetInstance(int instanceId, out GameObject instance)
+        public bool TryGetInstance(int instanceId, out INetworkObject instance)
         {
             return _instances.TryGetValue(instanceId, out instance);
         }
 
         public int CreateObject(Guid originalObjectId)
         {
-            var instanceId = BitConverter.ToInt32(XxHash32.Hash(Guid.NewGuid().ToByteArray()));
+            var instanceId = _networkObjectFactory.NewInstanceId();
 
             var signal = new CreateObjectSignal()
             {
@@ -117,7 +118,7 @@ namespace Crossoverse.Core.Context
             {
                 if (prefab.Guid == signal.OriginalObjectId)
                 {
-                    var instance = GameObject.Instantiate(prefab.gameObject);
+                    var instance = _networkObjectFactory.Create(prefab, signal.InstanceId);
                     _instances.TryAdd(signal.InstanceId, instance);
                     _createObjectEventPublisher.Publish(instance);
                 }
@@ -131,7 +132,7 @@ namespace Crossoverse.Core.Context
             if (_instances.Remove(signal.InstanceId, out var instance))
             {
                 _destroyingObjectEventPublisher.Publish(instance);
-                GameObject.Destroy(instance);
+                instance.Dispose();
             }
         }
 
