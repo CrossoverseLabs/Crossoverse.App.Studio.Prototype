@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Crossoverse.Core.Domain.Multiplayer;
-using Crossoverse.Core.Domain.SignalStreaming;
-using Crossoverse.Core.Domain.SignalStreaming.BufferedSignal;
-using Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal;
+using Crossoverse.SignalStreaming;
+using Crossoverse.SignalStreaming.LowFreqSignal;
+using Crossoverse.SignalStreaming.BufferedSignal;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 

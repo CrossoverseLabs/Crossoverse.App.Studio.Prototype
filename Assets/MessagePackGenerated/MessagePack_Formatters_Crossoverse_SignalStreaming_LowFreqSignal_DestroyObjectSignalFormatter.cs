@@ -14,12 +14,12 @@
 #pragma warning disable SA1403 // File may only contain a single namespace
 #pragma warning disable SA1649 // File name should match first type name
 
-namespace MessagePack.Formatters.Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal
+namespace MessagePack.Formatters.Crossoverse.SignalStreaming.LowFreqSignal
 {
-    public sealed class TextMessageSignalFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal.TextMessageSignal>
+    public sealed class DestroyObjectSignalFormatter : global::MessagePack.Formatters.IMessagePackFormatter<global::Crossoverse.SignalStreaming.LowFreqSignal.DestroyObjectSignal>
     {
 
-        public void Serialize(ref global::MessagePack.MessagePackWriter writer, global::Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal.TextMessageSignal value, global::MessagePack.MessagePackSerializerOptions options)
+        public void Serialize(ref global::MessagePack.MessagePackWriter writer, global::Crossoverse.SignalStreaming.LowFreqSignal.DestroyObjectSignal value, global::MessagePack.MessagePackSerializerOptions options)
         {
             if (value == null)
             {
@@ -29,12 +29,12 @@ namespace MessagePack.Formatters.Crossoverse.Core.Domain.SignalStreaming.LowFreq
 
             global::MessagePack.IFormatterResolver formatterResolver = options.Resolver;
             writer.WriteArrayHeader(3);
-            global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<string>(formatterResolver).Serialize(ref writer, value.Message, options);
+            writer.Write(value.InstanceId);
             global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<global::System.Guid>(formatterResolver).Serialize(ref writer, value.GeneratedBy, options);
             writer.Write(value.OriginTimestampMilliseconds);
         }
 
-        public global::Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal.TextMessageSignal Deserialize(ref global::MessagePack.MessagePackReader reader, global::MessagePack.MessagePackSerializerOptions options)
+        public global::Crossoverse.SignalStreaming.LowFreqSignal.DestroyObjectSignal Deserialize(ref global::MessagePack.MessagePackReader reader, global::MessagePack.MessagePackSerializerOptions options)
         {
             if (reader.TryReadNil())
             {
@@ -44,14 +44,14 @@ namespace MessagePack.Formatters.Crossoverse.Core.Domain.SignalStreaming.LowFreq
             options.Security.DepthStep(ref reader);
             global::MessagePack.IFormatterResolver formatterResolver = options.Resolver;
             var length = reader.ReadArrayHeader();
-            var ____result = new global::Crossoverse.Core.Domain.SignalStreaming.LowFreqSignal.TextMessageSignal();
+            var ____result = new global::Crossoverse.SignalStreaming.LowFreqSignal.DestroyObjectSignal();
 
             for (int i = 0; i < length; i++)
             {
                 switch (i)
                 {
                     case 0:
-                        ____result.Message = global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<string>(formatterResolver).Deserialize(ref reader, options);
+                        ____result.InstanceId = reader.ReadInt32();
                         break;
                     case 1:
                         ____result.GeneratedBy = global::MessagePack.FormatterResolverExtensions.GetFormatterWithVerify<global::System.Guid>(formatterResolver).Deserialize(ref reader, options);

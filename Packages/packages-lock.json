@@ -304,6 +304,29 @@
       "source": "local",
       "dependencies": {}
     },
+    "dev.crossoverse.signalstreaming": {
+      "version": "file:./Crossoverse.SignalStreaming/src/SignalStreaming",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
+    "dev.crossoverse.signalstreaming.infrastructure": {
+      "version": "file:./Crossoverse.SignalStreaming/src/SignalStreaming.Infrastructure",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "dev.crossoverse.signalstreaming": "0.1.0"
+      }
+    },
+    "dev.crossoverse.signalstreaming.infrastructure.unity": {
+      "version": "file:./Crossoverse.SignalStreaming/src/SignalStreaming.Infrastructure.Unity",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "dev.crossoverse.signalstreaming": "0.1.0",
+        "dev.crossoverse.signalstreaming.infrastructure": "0.1.0"
+      }
+    },
     "dev.crossoverse.toolkit.resourceprovider": {
       "version": "https://github.com/CrossoverseLabs/Crossoverse.Toolkit.Unity.git?path=Packages/Crossoverse.Toolkit.ResourceProvider",
       "depth": 0,
