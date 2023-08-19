@@ -1,3 +1,6 @@
 [submodule "Packages/Crossoverse.Core"]
 	path = Packages/Crossoverse.Core
 	url = https://github.com/CrossoverseLabs/Crossoverse.Core.git
+[submodule "Packages/Crossoverse.SignalStreaming"]
+	path = Packages/Crossoverse.SignalStreaming
+	url = https://github.com/CrossoverseLabs/Crossoverse.SignalStreaming.git
