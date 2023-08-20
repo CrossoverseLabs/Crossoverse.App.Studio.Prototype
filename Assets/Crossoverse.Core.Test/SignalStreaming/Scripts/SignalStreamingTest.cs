@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Hashing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Crossoverse.Core.Context;
 using Crossoverse.SignalStreaming;
-using Crossoverse.SignalStreaming.LowFreqSignal;
 using Crossoverse.SignalStreaming.BufferedSignal;
+using Crossoverse.SignalStreaming.LowFreqSignal;
+using Crossoverse.SignalStreaming.HighFreqSignal;
 using Crossoverse.SignalStreaming.Infrastructure;
 using Crossoverse.SignalStreaming.Infrastructure.Unity;
+using Crossoverse.Core.Domain.Multiplayer;
+using Crossoverse.Core.Unity;
 using Crossoverse.Core.Unity.Multiplayer;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
@@ -26,8 +30,9 @@ namespace Crossoverse.Core.Test
 
         private SignalStreamingContext _signalStreamingContext;
         private ISignalStreamingChannelFactory _streamingChannelFactory;
-        private ILowFreqSignalStreamingChannel _lowFreqSignalStreamingChannel;
         private IBufferedSignalStreamingChannel _bufferedSignalStreamingChannel;
+        private ILowFreqSignalStreamingChannel _lowFreqSignalStreamingChannel;
+        private IHighFreqSignalStreamingChannel _highFreqSignalStreamingChannel;
 
         private Dictionary<string, IDisposable> _channelDisposables = new();
         private IDisposable _contextDisposable;
@@ -56,11 +61,13 @@ namespace Crossoverse.Core.Test
         {
             Initialize();
 
-            var lowFreqSignalChannel = "LowFreqEventTest";
             var bufferedSignalChannel = "BufferedSignalTest";
+            var lowFreqSignalChannel = "LowFreqEventTest";
+            var highFreqSignalChannel = "HighFreqEventTest";
 
-            await _signalStreamingContext.ConnectAsync(lowFreqSignalChannel, SignalType.LowFreqSignal, StreamingType.Bidirectional);
             await _signalStreamingContext.ConnectAsync(bufferedSignalChannel, SignalType.BufferedSignal, StreamingType.Bidirectional);
+            await _signalStreamingContext.ConnectAsync(lowFreqSignalChannel, SignalType.LowFreqSignal, StreamingType.Bidirectional);
+            await _signalStreamingContext.ConnectAsync(highFreqSignalChannel, SignalType.HighFreqSignal, StreamingType.Bidirectional);
             Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Connected</color>");
 
             // SendLowFreqEventSignal($"LowFreqSignalTest");
@@ -79,6 +86,16 @@ namespace Crossoverse.Core.Test
             Debug.Log($"----------");
 
             var instanceId = SendCreateObjectSignal(_prefabs[0].Guid);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            SendObjectPoseSignal(new Vector3(1, 1, 1), Quaternion.identity);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            SendObjectPoseSignal(new Vector3(1, 1, 2), Quaternion.identity);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            SendObjectPoseSignal(new Vector3(1, 2, 2), Quaternion.identity);
+
             await UniTask.Delay(TimeSpan.FromSeconds(5));
             SendDestroyObjectSignal(instanceId);
         }
@@ -114,6 +131,13 @@ namespace Crossoverse.Core.Test
                             .Subscribe(OnCreateObjectSignalReceivedAsync)
                             .AddTo(channelDisposableBag);
                     }
+                    else if (streamingChannel is IHighFreqSignalStreamingChannel highFreqSignalStreamingChannel)
+                    {
+                        _highFreqSignalStreamingChannel = highFreqSignalStreamingChannel;
+                        _highFreqSignalStreamingChannel.OnObjectPoseReceived
+                            .Subscribe(OnObjectPoseSignalReceivedAsync)
+                            .AddTo(channelDisposableBag);
+                    }
 
                     if (_channelDisposables.TryGetValue(streamingChannel.Id, out var channelDisposable))
                     {
@@ -130,6 +154,10 @@ namespace Crossoverse.Core.Test
                     if (_lowFreqSignalStreamingChannel.Id == streamingChannelId)
                     {
                         _lowFreqSignalStreamingChannel = null;
+                    }
+                    if (_highFreqSignalStreamingChannel.Id == streamingChannelId)
+                    {
+                        _highFreqSignalStreamingChannel = null;
                     }
 
                     _channelDisposables.Remove(streamingChannelId, out var disposable);
@@ -188,6 +216,34 @@ namespace Crossoverse.Core.Test
             _lowFreqSignalStreamingChannel.Send(signal);
         }
 
+        private void SendObjectPoseSignal(Vector3 position, Quaternion rotation)
+        {
+            if (_instances.Values.Count <= 0)
+            {
+                return;
+            }
+
+            var kv = _instances.FirstOrDefault();
+            if (kv.Value == null)
+            {
+                return;
+            }
+
+            var instanceId = kv.Key;
+            Debug.Log($"<color=cyan>instance.InstanceId: {instanceId}");
+
+            var signal = new ObjectPoseSignal()
+            {
+                InstanceId = instanceId,
+                Position = position.ToSystemNumerics(),
+                Rotation = rotation.ToSystemNumerics(),
+                GeneratedBy = _clientId,
+                OriginTimestampMilliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
+            };
+
+            _highFreqSignalStreamingChannel.Send(signal);
+        }
+
         private void OnTextMessageReceived(TextMessageSignal signal)
         {
             var format = "yyyy/MM/dd HH:mm:ss.fff";
@@ -221,6 +277,7 @@ namespace Crossoverse.Core.Test
                 {
                     Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Instantiate prefab[{i}]</color>");
                     var instance = GameObject.Instantiate(_prefabs[i].gameObject);
+                    var networkObject = instance.GetComponent<INetworkObject>();
                     _instances.TryAdd(signal.InstanceId, instance);
                 }
             }
@@ -242,6 +299,24 @@ namespace Crossoverse.Core.Test
             if (_instances.Remove(signal.InstanceId, out var instance))
             {
                 GameObject.Destroy(instance);
+            }
+        }
+
+        private async void OnObjectPoseSignalReceivedAsync(ObjectPoseSignal signal)
+        {
+            await UniTask.SwitchToMainThread();
+
+            var format = "yyyy/MM/dd HH:mm:ss.fff";
+            var originTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(signal.OriginTimestampMilliseconds).ToString(format);
+            Debug.Log($"----------");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] ObjectPoseSignal</color>");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Instance id: \"{signal.InstanceId}\"</color>");
+            Debug.Log($"<color=lime>[{nameof(SignalStreamingTest)}] Origin timestamp: \"{originTimestamp}\"</color>");
+            Debug.Log($"----------");
+
+            if (_instances.TryGetValue(signal.InstanceId, out var instance))
+            {
+                instance.gameObject.transform.position = signal.Position.ToUnity();
             }
         }
     }

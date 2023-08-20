@@ -117,6 +117,7 @@ GameObject:
   m_Component:
   - component: {fileID: 635061973965932142}
   - component: {fileID: 6826949390792672290}
+  - component: {fileID: 7768798918095552046}
   m_Layer: 0
   m_Name: GameObject_3
   m_TagString: Untagged
@@ -138,7 +139,7 @@ Transform:
   m_Children:
   - {fileID: 4230422794469352153}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6826949390792672290
 MonoBehaviour:
@@ -153,3 +154,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _guidString: 00000000000000000000000000000000
+--- !u!114 &7768798918095552046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5876156274662419953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4970af135b85504b8ea5f6595caf97b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
