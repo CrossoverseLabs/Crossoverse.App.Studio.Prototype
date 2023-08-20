@@ -47,11 +47,12 @@ namespace MessagePack.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(3)
+            lookup = new global::System.Collections.Generic.Dictionary<global::System.Type, int>(4)
             {
                 { typeof(global::Crossoverse.SignalStreaming.BufferedSignal.CreateObjectSignal), 0 },
-                { typeof(global::Crossoverse.SignalStreaming.LowFreqSignal.DestroyObjectSignal), 1 },
-                { typeof(global::Crossoverse.SignalStreaming.LowFreqSignal.TextMessageSignal), 2 },
+                { typeof(global::Crossoverse.SignalStreaming.HighFreqSignal.ObjectPoseSignal), 1 },
+                { typeof(global::Crossoverse.SignalStreaming.LowFreqSignal.DestroyObjectSignal), 2 },
+                { typeof(global::Crossoverse.SignalStreaming.LowFreqSignal.TextMessageSignal), 3 },
             };
         }
 
@@ -66,8 +67,9 @@ namespace MessagePack.Resolvers
             switch (key)
             {
                 case 0: return new MessagePack.Formatters.Crossoverse.SignalStreaming.BufferedSignal.CreateObjectSignalFormatter();
-                case 1: return new MessagePack.Formatters.Crossoverse.SignalStreaming.LowFreqSignal.DestroyObjectSignalFormatter();
-                case 2: return new MessagePack.Formatters.Crossoverse.SignalStreaming.LowFreqSignal.TextMessageSignalFormatter();
+                case 1: return new MessagePack.Formatters.Crossoverse.SignalStreaming.HighFreqSignal.ObjectPoseSignalFormatter();
+                case 2: return new MessagePack.Formatters.Crossoverse.SignalStreaming.LowFreqSignal.DestroyObjectSignalFormatter();
+                case 3: return new MessagePack.Formatters.Crossoverse.SignalStreaming.LowFreqSignal.TextMessageSignalFormatter();
                 default: return null;
             }
         }
