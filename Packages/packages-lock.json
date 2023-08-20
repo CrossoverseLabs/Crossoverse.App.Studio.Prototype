@@ -22,11 +22,11 @@
       "url": "https://package.openupm.com"
     },
     "com.neuecc.messagepack": {
-      "version": "2.4.35",
+      "version": "https://github.com/MessagePack-CSharp/MessagePack-CSharp.git?path=src/MessagePack.UnityClient/Assets/Scripts/MessagePack#v2.6.100-alpha",
       "depth": 0,
-      "source": "registry",
+      "source": "git",
       "dependencies": {},
-      "url": "https://package.openupm.com"
+      "hash": "6d749218bb1790f7dde5689d8caa703f7d15986f"
     },
     "com.neuecc.unirx": {
       "version": "7.1.0",

@@ -15,7 +15,7 @@
     "com.cysharp.messagepipe": "1.7.4",
     "com.cysharp.messagepipe.vcontainer": "1.7.4",
     "com.cysharp.unitask": "2.3.3",
-    "com.neuecc.messagepack": "2.4.35",
+    "com.neuecc.messagepack": "https://github.com/MessagePack-CSharp/MessagePack-CSharp.git?path=src/MessagePack.UnityClient/Assets/Scripts/MessagePack#v2.6.100-alpha",
     "com.neuecc.unirx": "7.1.0",
     "jp.hadashikick.vcontainer": "1.13.0",
     "com.unity.addressables": "1.21.12",
